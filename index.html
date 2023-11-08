@@ -1,42 +1,87 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chatroom</title>
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script type='text/javascript' src='https://cdn.scaledrone.com/scaledrone.min.js'></script>
+  <!--<script type='text/javascript' src='http://0.0.0.0:8080/scaledrone.js'></script>-->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <style>
+    body {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 13px;
+      display: flex;
+      flex-direction: column;
+      max-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #333;
+      /* Dark gray background */
+    }
+
+    .members-count,
+    .members-list,
+    .messages {
+      border: 1px solid #555;
+      /* Dark gray border */
+      padding: 15px;
+      margin-bottom: 15px;
+      background-color: #444;
+      /* Dark gray background */
+      color: #fff;
+      /* White text color */
+    }
+
+    .messages {
+      flex-shrink: 1;
+      overflow: auto;
+    }
+
+    .message {
+      padding: 5px 0;
+    }
+
+    .message .member {
+      display: inline-block;
+    }
+
+    .member {
+      padding-right: 10px;
+      position: relative;
+    }
+
+    .message-form {
+      display: flex;
+      flex-shrink: 0;
+    }
+
+    .message-form__input {
+      flex-grow: 1;
+      border: 1px solid #444;
+      /* Dark gray border */
+      padding: 10px 15px;
+      font-size: 16px;
+      background-color: #555;
+      /* Dark gray background */
+      color: #fff;
+      /* White text color */
+    }
+
+    .message-form__button {
+      margin: 10px;
+    }
+  </style>
 </head>
+
 <body>
-    <!-- Chatroom Section -->
-    <section id="chatroom" class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <h2>Chatroom</h2>
-                <form id="usernameForm">
-                    <div class="form-group">
-                        <label for="username">Username:</label>
-                        <input type="text" class="form-control" id="username" placeholder="Enter your username" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary w-100">Join Chat</button>
-                </form>
-                <div id="chatContainer" class="mt-4">
-                    <div id="messageContainer"></div>
-                    <form id="messageForm">
-                        <div class="input-group">
-                            <input type="text" class="form-control" id="messageInput" placeholder="Type your message..." required>
-                            <div class="input-group-append">
-                                <button type="submit" class="btn btn-primary">Send</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </section>
- 
-    <!-- Bootstrap & jQuery JS -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <div class="members-count">-</div>
+  <div class="members-list">-</div>
+  <div class="messages"></div>
+  <form class="message-form" onsubmit="return false;">
+    <input class="message-form__input" placeholder="Type a message.." type="text" />
+    <input class="message-form__button" value="Send" type="submit" />
+  </form>
+  <script src="chat.js"></script>
 </body>
+
 </html>
