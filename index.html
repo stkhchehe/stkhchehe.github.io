@@ -8,6 +8,8 @@
     body {
         font-family: Arial, sans-serif;
         text-align: center;
+        background-color: #111;
+        color: #fff;
     }
     #drop-area {
         border: 2px dashed #ccc;
@@ -17,6 +19,7 @@
         margin: 50px auto;
         padding: 20px;
         cursor: pointer;
+        background-color: #333;
     }
     #drop-area.highlight {
         border-color: purple;
@@ -78,7 +81,7 @@
 
         function sendToDiscordWebhook(fileData) {
             // Replace 'YOUR_DISCORD_WEBHOOK_URL' with your actual Discord webhook URL
-            const webhookUrl = 'https://discord.com/api/webhooks/1224454402023100618/E-6kR-beFUfnmcPKFcyNakHGy3nNyGX_TpspHpGUKKonrmrL5vo7gvkdLfkfMLdkBgfv';
+            const webhookUrl = 'YOUR_DISCORD_WEBHOOK_URL';
             fetch(webhookUrl, {
                 method: 'POST',
                 headers: {
