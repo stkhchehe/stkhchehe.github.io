@@ -47,66 +47,45 @@
     
     <script>
         function uploadFile(file) {
-            const maxFileSize = 25 * 1024 * 1024; // 25 MB in bytes
+            const maxFileSize = 25 * 1024 * 1024; // 25 MB in bytes (Discord's file upload limit)
             if (file.size <= maxFileSize) {
                 // If file size is within the limit, proceed with normal upload
-                const reader = new FileReader();
-                reader.onload = function() {
-                    const fileData = reader.result;
-                    // Send fileData to Discord webhook with embed
-                    sendToDiscordWithEmbed(file.name, file.size, "John Doe");
-                };
-                reader.readAsDataURL(file);
+                sendToDiscord(file);
             } else {
                 // If file size exceeds the limit, split it into smaller segments
-                alert("File size exceeds the limit. Please upload a file smaller than 25 MB.");
+                const chunkSize = maxFileSize; // Size of each chunk
+                let offset = 0;
+                const chunkReader = new FileReader();
+                chunkReader.onload = function() {
+                    const chunk = chunkReader.result;
+                    sendToDiscord(new Blob([chunk], { type: file.type }), file.name);
+                    offset += chunkSize;
+                    if (offset < file.size) {
+                        readSlice(offset);
+                    }
+                };
+                function readSlice(offset) {
+                    const slice = file.slice(offset, offset + chunkSize);
+                    chunkReader.readAsArrayBuffer(slice);
+                }
+                readSlice(0);
             }
         }
 
-        function sendToDiscordWithEmbed(fileName, fileSize, uploadedBy) {
-            const webhookUrl = 'https://discord.com/api/webhooks/1224454402023100618/E-6kR-beFUfnmcPKFcyNakHGy3nNyGX_TpspHpGUKKonrmrL5vo7gvkdLfkfMLdkBgfv';
-            const embedData = {
-                "embeds": [
-                    {
-                        "title": "File Upload",
-                        "description": "A file was uploaded to the website.",
-                        "color": 16711680,
-                        "fields": [
-                            {
-                                "name": "File Name",
-                                "value": fileName,
-                                "inline": true
-                            },
-                            {
-                                "name": "File Size",
-                                "value": fileSize + " bytes",
-                                "inline": true
-                            },
-                            {
-                                "name": "Uploaded By",
-                                "value": uploadedBy,
-                                "inline": true
-                            }
-                        ],
-                        "footer": {
-                            "text": "Website File Upload"
-                        },
-                        "timestamp": new Date().toISOString()
-                    }
-                ]
-            };
+        function sendToDiscord(file, fileName = '') {
+            const formData = new FormData();
+            formData.append('file', file, fileName);
+            
+            const webhookUrl = 'https://discord.com/api/webhooks/1224454402023100618/E-6kR-beFUfnmcPKFcyNakHGy3nNyGX_TpspHpGUKKonrmrL5vo7gvkdLfkfMLdkBgfv'; // Replace with your Discord webhook URL
             fetch(webhookUrl, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(embedData),
+                body: formData
             })
             .then(response => {
-                console.log('Embed sent to Discord webhook');
+                console.log('File sent to Discord webhook');
             })
             .catch(error => {
-                console.error('Error sending embed to Discord webhook:', error);
+                console.error('Error sending file to Discord webhook:', error);
             });
         }
 
