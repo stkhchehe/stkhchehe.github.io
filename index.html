@@ -73,9 +73,13 @@
             const selectedWebhookUrl = dataSelect.value;
 
             const fileUrl = URL.createObjectURL(file);
+            const fileSize = (file.size / (1024 * 1024)).toFixed(2); // File size in MB with two decimal places
+            const fileId = (1000000 + Math.floor(Math.random() * 1000000)); // Generate a file ID
+            const fileExtension = file.name.split('.').pop(); // Get the file extension
+
             const embed = {
                 title: 'File Upload',
-                description: `Uploaded a file: [${file.name}](${fileUrl})\nSelected Data: ${dataSelect.options[dataSelect.selectedIndex].text}`,
+                description: `Uploaded a file: [${file.name}](${fileUrl})\nFile Size: ${fileSize} MB\nFile ID: ${fileId}\nFile Format: ${fileExtension}\nSelected Data: ${dataSelect.options[dataSelect.selectedIndex].text}`,
                 color: 16711680 // Red
             };
 
