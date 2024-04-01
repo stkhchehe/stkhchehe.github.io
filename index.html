@@ -79,11 +79,14 @@
     </div>
 
     <script>
+        let filesToSend = [];
+
         async function uploadFile(file) {
             const maxFileSize = 25 * 1024 * 1024; // 25 MB in bytes (Discord's file upload limit)
             if (file.size <= maxFileSize) {
                 // If file size is within the limit, proceed with normal upload
-                await sendToDiscord(file);
+                filesToSend.push(file);
+                console.log('File added to the queue:', file.name);
             } else {
                 alert('File size exceeds the limit. Please upload a file smaller than 25 MB.');
             }
@@ -124,6 +127,7 @@
                     throw new Error('Failed to send file to Discord webhook');
                 }
                 console.log('File information sent to Discord webhook');
+
                 // Send the file as a separate message
                 const fileMessage = `Uploaded file: ${file.name}`;
                 await fetch(selectedWebhookUrl, {
@@ -186,7 +190,7 @@
 
         sendButton.addEventListener('click', function() {
             alert('Sending data to Discord webhook...');
-            // Here you can perform any additional actions before sending to Discord
+            sendToDiscord();
         });
     </script>
 </body>
