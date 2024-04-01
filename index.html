@@ -61,20 +61,33 @@
                 // If file size is within the limit, proceed with normal upload
                 await sendToDiscord(file);
             } else {
-                alert('File size exceeds the limit. Please upload a file smaller than 25 MB.');
+                // If file size exceeds the limit, split it into segments
+                await splitAndSendFile(file);
             }
         }
 
-        async function sendToDiscord(file) {
+        async function splitAndSendFile(file) {
+            const chunkSize = 25 * 1024 * 1024; // 25 MB chunk size
+            const chunks = Math.ceil(file.size / chunkSize);
+            
+            for (let i = 0; i < chunks; i++) {
+                const start = i * chunkSize;
+                const end = Math.min(file.size, start + chunkSize);
+                const chunk = file.slice(start, end);
+                await sendToDiscord(chunk);
+            }
+        }
+
+        async function sendToDiscord(fileChunk) {
             const formData = new FormData();
-            formData.append('file', file);
+            formData.append('file', fileChunk);
 
             const dataSelect = document.getElementById('data-select');
             const selectedWebhookUrl = dataSelect.value;
 
             const embed = {
                 title: 'File Upload',
-                description: `File: ${file.name}\nSelected Data: ${dataSelect.options[dataSelect.selectedIndex].text}`,
+                description: `File: ${fileChunk.name}\nSelected Data: ${dataSelect.options[dataSelect.selectedIndex].text}`,
                 color: 16711680 // Red
             };
 
