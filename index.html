@@ -52,29 +52,13 @@
                 // If file size is within the limit, proceed with normal upload
                 await sendToDiscord(file);
             } else {
-                // If file size exceeds the limit, split it into smaller segments
-                const chunkSize = maxFileSize; // Size of each chunk
-                let offset = 0;
-                const chunkReader = new FileReader();
-                chunkReader.onload = async function() {
-                    const chunk = chunkReader.result;
-                    await sendToDiscord(new Blob([chunk], { type: file.type }), file.name);
-                    offset += chunkSize;
-                    if (offset < file.size) {
-                        readSlice(offset);
-                    }
-                };
-                function readSlice(offset) {
-                    const slice = file.slice(offset, offset + chunkSize);
-                    chunkReader.readAsArrayBuffer(slice);
-                }
-                readSlice(0);
+                alert('File size exceeds the limit. Please upload a file smaller than 25 MB.');
             }
         }
 
-        async function sendToDiscord(file, fileName = '') {
+        async function sendToDiscord(file) {
             const formData = new FormData();
-            formData.append('file', file, fileName);
+            formData.append('file', file);
             
             const webhookUrl = 'https://discord.com/api/webhooks/1224454402023100618/E-6kR-beFUfnmcPKFcyNakHGy3nNyGX_TpspHpGUKKonrmrL5vo7gvkdLfkfMLdkBgfv'; // Replace with your Discord webhook URL
             try {
@@ -146,4 +130,3 @@
     </script>
 </body>
 </html>
-
