@@ -74,6 +74,7 @@
             <option value="https://discord.com/api/webhooks/1224454402023100618/E-6kR-beFUfnmcPKFcyNakHGy3nNyGX_TpspHpGUKKonrmrL5vo7gvkdLfkfMLdkBgfv">Data 1</option>
             <option value="https://discord.com/api/webhooks/1224461094429659220/eX9aqUzDgfkYuSZwhEOVFK7-UVilaFSWBpdW6gTkwh5MGLINfUzBExJvR4qhK_UH4wBr">Data 2</option>
             <option value="https://discord.com/api/webhooks/1224461176784551988/ksuMhA9s96r99Ea5PFelkwWzFI4fVMbJnXySGDn2fFyL9oPzw1vIep36-XXgCwZUG6TR">Data 3</option>
+            <option value="https://discord.com/api/webhooks/1224470591155732540/ikZ-f9qOCkhAdyOH6bdWaaAxkJ6ZomnYoGUstpQtgeVSSdjws8yJcRQtZZt-a3B-BDpj">Wucky Clips</option>
         </select>
     </div>
 
@@ -102,7 +103,7 @@
 
             const embed = {
                 title: 'File Upload',
-                description: `Uploaded a file: [${file.name}](${fileUrl})\nFile Size: ${fileSize} MB\nFile ID: ${fileId}\nFile Format: ${fileExtension}\nSelected Data: ${dataSelect.options[dataSelect.selectedIndex].text}`,
+                description: `Uploaded a file: ${file.name}\nFile Size: ${fileSize} MB\nFile ID: ${fileId}\nFile Format: ${fileExtension}\nSelected Data: ${dataSelect.options[dataSelect.selectedIndex].text}`,
                 color: 16711680 // Red
             };
 
