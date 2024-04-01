@@ -97,8 +97,29 @@
                 filesToSend.push(file);
                 console.log('File added to the queue:', file.name);
             } else {
-                alert('File size exceeds the limit. Please upload a file smaller than 25 MB.');
+                if (file.type.startsWith('video/')) {
+                    // If file is a video and exceeds 25MB, split it into parts
+                    splitVideo(file);
+                } else {
+                    alert('File size exceeds the limit. Please upload a file smaller than 25 MB.');
+                }
             }
+        }
+
+        async function splitVideo(file) {
+            const fileSize = file.size;
+            const maxFileSize = 25 * 1024 * 1024; // 25 MB in bytes (Discord's file upload limit)
+            const chunkSize = Math.ceil(fileSize / 2); // Split video into two parts
+
+            for (let i = 0; i < 2; i++) {
+                const start = i * chunkSize;
+                const end = start + chunkSize;
+                const chunk = file.slice(start, end);
+                filesToSend.push(chunk);
+                console.log(`Chunk ${i + 1} added to the queue`);
+            }
+
+            console.log('Video split into parts for upload');
         }
 
         async function sendToDiscord() {
@@ -137,7 +158,6 @@
                         throw new Error('Failed to send file to Discord webhook');
                     }
                     console.log('File information sent to Discord webhook');
-
                     // Send the file as a separate message
                     const fileMessage = `Uploaded file: ${file.name}`;
                     await fetch(selectedWebhookUrl, {
@@ -150,8 +170,7 @@
                 }
             }
 
-            // Clear the files queue after sending
-            filesToSend = [];
+            filesToSend = []; // Clear the files queue after sending
         }
 
         const dropArea = document.getElementById('drop-area');
