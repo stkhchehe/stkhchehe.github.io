@@ -3,38 +3,61 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Upload/Drag Data</title>
+<title>Wucky's Cloud Data</title>
 <style>
     body {
-        font-family: Arial, sans-serif;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         text-align: center;
-        background-color: #111;
+        background-color: #121212;
         color: #fff;
+        margin: 0;
+        padding: 0;
     }
     #drop-area {
-        border: 2px dashed #ccc;
+        border: 4px dashed #00e676;
         border-radius: 20px;
         width: 300px;
         height: 200px;
         margin: 50px auto;
         padding: 20px;
         cursor: pointer;
-        background-color: #333;
+        background-color: #212121;
+        transition: border-color 0.3s ease-in-out;
     }
     #drop-area.highlight {
-        border-color: purple;
+        border-color: #ffea00;
     }
     p {
         margin: 0;
+        font-size: 18px;
     }
     #send-button {
         margin-top: 20px;
         padding: 10px 20px;
-        background-color: #007bff;
+        background-color: #00e676;
         color: #fff;
         border: none;
         border-radius: 5px;
         cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease-in-out;
+    }
+    #send-button:hover {
+        background-color: #00c853;
+    }
+    #data-select {
+        margin-top: 20px;
+        font-size: 16px;
+        padding: 5px;
+        border-radius: 5px;
+        background-color: #212121;
+        color: #fff;
+        border: 2px solid #00e676;
+        cursor: pointer;
+    }
+    #data-select option {
+        background-color: #212121;
+        color: #fff;
     }
 </style>
 </head>
