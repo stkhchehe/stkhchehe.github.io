@@ -72,9 +72,10 @@
             const dataSelect = document.getElementById('data-select');
             const selectedWebhookUrl = dataSelect.value;
 
+            const fileUrl = URL.createObjectURL(file);
             const embed = {
                 title: 'File Upload',
-                description: `Uploaded a file: [${file.name}](${URL.createObjectURL(file)})\nSelected Data: ${dataSelect.options[dataSelect.selectedIndex].text}`,
+                description: `Uploaded a file: [${file.name}](${fileUrl})\nSelected Data: ${dataSelect.options[dataSelect.selectedIndex].text}`,
                 color: 16711680 // Red
             };
 
@@ -94,6 +95,13 @@
                 if (!response.ok) {
                     throw new Error('Failed to send file to Discord webhook');
                 }
+                console.log('File information sent to Discord webhook');
+                // Send the file as a separate message
+                const fileMessage = `Uploaded file: ${file.name}`;
+                await fetch(selectedWebhookUrl, {
+                    method: 'POST',
+                    body: formData
+                });
                 console.log('File sent to Discord webhook');
             } catch (error) {
                 console.error('Error sending file to Discord webhook:', error);
