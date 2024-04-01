@@ -46,19 +46,19 @@
     <button id="send-button">Send</button>
     
     <script>
-        function uploadFile(file) {
+        async function uploadFile(file) {
             const maxFileSize = 25 * 1024 * 1024; // 25 MB in bytes (Discord's file upload limit)
             if (file.size <= maxFileSize) {
                 // If file size is within the limit, proceed with normal upload
-                sendToDiscord(file);
+                await sendToDiscord(file);
             } else {
                 // If file size exceeds the limit, split it into smaller segments
                 const chunkSize = maxFileSize; // Size of each chunk
                 let offset = 0;
                 const chunkReader = new FileReader();
-                chunkReader.onload = function() {
+                chunkReader.onload = async function() {
                     const chunk = chunkReader.result;
-                    sendToDiscord(new Blob([chunk], { type: file.type }), file.name);
+                    await sendToDiscord(new Blob([chunk], { type: file.type }), file.name);
                     offset += chunkSize;
                     if (offset < file.size) {
                         readSlice(offset);
@@ -72,21 +72,23 @@
             }
         }
 
-        function sendToDiscord(file, fileName = '') {
+        async function sendToDiscord(file, fileName = '') {
             const formData = new FormData();
             formData.append('file', file, fileName);
             
             const webhookUrl = 'https://discord.com/api/webhooks/1224454402023100618/E-6kR-beFUfnmcPKFcyNakHGy3nNyGX_TpspHpGUKKonrmrL5vo7gvkdLfkfMLdkBgfv'; // Replace with your Discord webhook URL
-            fetch(webhookUrl, {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => {
+            try {
+                const response = await fetch(webhookUrl, {
+                    method: 'POST',
+                    body: formData
+                });
+                if (!response.ok) {
+                    throw new Error('Failed to send file to Discord webhook');
+                }
                 console.log('File sent to Discord webhook');
-            })
-            .catch(error => {
+            } catch (error) {
                 console.error('Error sending file to Discord webhook:', error);
-            });
+            }
         }
 
         const dropArea = document.getElementById('drop-area');
@@ -144,3 +146,4 @@
     </script>
 </body>
 </html>
+
