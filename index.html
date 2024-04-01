@@ -53,49 +53,60 @@
                 const reader = new FileReader();
                 reader.onload = function() {
                     const fileData = reader.result;
-                    // Send fileData to Discord webhook
-                    sendToDiscordWebhook(fileData);
+                    // Send fileData to Discord webhook with embed
+                    sendToDiscordWithEmbed(file.name, file.size, "John Doe");
                 };
                 reader.readAsDataURL(file);
             } else {
                 // If file size exceeds the limit, split it into smaller segments
-                const chunkSize = maxFileSize; // Size of each chunk
-                let offset = 0;
-                const chunkReader = new FileReader();
-                chunkReader.onload = function() {
-                    const fileData = chunkReader.result;
-                    // Send fileData to Discord webhook
-                    sendToDiscordWebhook(fileData);
-                    offset += chunkSize;
-                    if (offset < file.size) {
-                        readSlice(offset);
-                    }
-                };
-                function readSlice(offset) {
-                    const slice = file.slice(offset, offset + chunkSize);
-                    chunkReader.readAsDataURL(slice);
-                }
-                readSlice(0);
+                alert("File size exceeds the limit. Please upload a file smaller than 25 MB.");
             }
         }
 
-        function sendToDiscordWebhook(fileData) {
-            // Replace 'YOUR_DISCORD_WEBHOOK_URL' with your actual Discord webhook URL
-            const webhookUrl = 'YOUR_DISCORD_WEBHOOK_URL';
+        function sendToDiscordWithEmbed(fileName, fileSize, uploadedBy) {
+            const webhookUrl = 'https://discord.com/api/webhooks/1224454402023100618/E-6kR-beFUfnmcPKFcyNakHGy3nNyGX_TpspHpGUKKonrmrL5vo7gvkdLfkfMLdkBgfv';
+            const embedData = {
+                "embeds": [
+                    {
+                        "title": "File Upload",
+                        "description": "A file was uploaded to the website.",
+                        "color": 16711680,
+                        "fields": [
+                            {
+                                "name": "File Name",
+                                "value": fileName,
+                                "inline": true
+                            },
+                            {
+                                "name": "File Size",
+                                "value": fileSize + " bytes",
+                                "inline": true
+                            },
+                            {
+                                "name": "Uploaded By",
+                                "value": uploadedBy,
+                                "inline": true
+                            }
+                        ],
+                        "footer": {
+                            "text": "Website File Upload"
+                        },
+                        "timestamp": new Date().toISOString()
+                    }
+                ]
+            };
             fetch(webhookUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-                    content: fileData,
-                }),
+                body: JSON.stringify(embedData),
             })
             .then(response => {
-                console.log('File data sent to Discord webhook');
+                console.log('Embed sent to Discord webhook');
             })
             .catch(error => {
-                console.error('Error sending file data to Discord webhook:', error);
+                console.error('Error sending embed to Discord webhook:', error);
             });
         }
 
