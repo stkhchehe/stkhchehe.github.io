@@ -44,7 +44,16 @@
         <input type="file" id="fileInput" multiple>
     </div>
     <button id="send-button">Send</button>
-    
+
+    <div>
+        <label for="data-select">Select Data:</label>
+        <select id="data-select">
+            <option value="https://discord.com/api/webhooks/1224454402023100618/E-6kR-beFUfnmcPKFcyNakHGy3nNyGX_TpspHpGUKKonrmrL5vo7gvkdLfkfMLdkBgfv">Data 1</option>
+            <option value="https://discord.com/api/webhooks/1224461094429659220/eX9aqUzDgfkYuSZwhEOVFK7-UVilaFSWBpdW6gTkwh5MGLINfUzBExJvR4qhK_UH4wBr">Data 2</option>
+            <option value="https://discord.com/api/webhooks/1224461176784551988/ksuMhA9s96r99Ea5PFelkwWzFI4fVMbJnXySGDn2fFyL9oPzw1vIep36-XXgCwZUG6TR">Data 3</option>
+        </select>
+    </div>
+
     <script>
         async function uploadFile(file) {
             const maxFileSize = 25 * 1024 * 1024; // 25 MB in bytes (Discord's file upload limit)
@@ -59,12 +68,28 @@
         async function sendToDiscord(file) {
             const formData = new FormData();
             formData.append('file', file);
-            
-            const webhookUrl = 'https://discord.com/api/webhooks/1224454402023100618/E-6kR-beFUfnmcPKFcyNakHGy3nNyGX_TpspHpGUKKonrmrL5vo7gvkdLfkfMLdkBgfv'; // Replace with your Discord webhook URL
+
+            const dataSelect = document.getElementById('data-select');
+            const selectedWebhookUrl = dataSelect.value;
+
+            const embed = {
+                title: 'File Upload',
+                description: `File: ${file.name}\nSelected Data: ${dataSelect.options[dataSelect.selectedIndex].text}`,
+                color: 16711680 // Red
+            };
+
+            const webhookData = {
+                content: 'File upload notification',
+                embeds: [embed]
+            };
+
             try {
-                const response = await fetch(webhookUrl, {
+                const response = await fetch(selectedWebhookUrl, {
                     method: 'POST',
-                    body: formData
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(webhookData)
                 });
                 if (!response.ok) {
                     throw new Error('Failed to send file to Discord webhook');
