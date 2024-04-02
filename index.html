@@ -13,6 +13,14 @@
         margin: 0;
         padding: 0;
     }
+    #topbar {
+        background-color: #212121;
+        padding: 10px 0;
+    }
+    #topbar h1 {
+        margin: 0;
+        font-size: 24px;
+    }
     #drop-area {
         border: 4px dashed #00e676;
         border-radius: 20px;
@@ -59,13 +67,12 @@
         background-color: #212121;
         color: #fff;
     }
-    #made-by {
-        margin-top: 50px;
-        font-size: 14px;
-    }
 </style>
 </head>
 <body>
+    <div id="topbar">
+        <h1>Wucky Data</h1>
+    </div>
     <div id="drop-area">
         <p>Drag and drop files here or click to upload.</p>
         <input type="file" id="fileInput" multiple>
@@ -82,95 +89,62 @@
         </select>
     </div>
 
-    <div id="made-by">
-        <p>Made By Wucky</p>
-        <a href="https://discord.gg/sCAsV2gg" target="_blank">Join our Discord server</a>
-    </div>
-
     <script>
-        let filesToSend = [];
-
         async function uploadFile(file) {
             const maxFileSize = 25 * 1024 * 1024; // 25 MB in bytes (Discord's file upload limit)
             if (file.size <= maxFileSize) {
                 // If file size is within the limit, proceed with normal upload
-                filesToSend.push(file);
-                console.log('File added to the queue:', file.name);
+                await sendToDiscord(file);
             } else {
-                if (file.type.startsWith('video/')) {
-                    // If file is a video and exceeds 25MB, split it into parts
-                    splitVideo(file);
-                } else {
-                    alert('File size exceeds the limit. Please upload a file smaller than 25 MB.');
-                }
+                alert('File size exceeds the limit. Please upload a file smaller than 25 MB.');
             }
         }
 
-        async function splitVideo(file) {
-            const fileSize = file.size;
-            const maxFileSize = 25 * 1024 * 1024; // 25 MB in bytes (Discord's file upload limit)
-            const chunkSize = Math.ceil(fileSize / 2); // Split video into two parts
+        async function sendToDiscord(file) {
+            const formData = new FormData();
+            formData.append('file', file);
 
-            for (let i = 0; i < 2; i++) {
-                const start = i * chunkSize;
-                const end = start + chunkSize;
-                const chunk = file.slice(start, end);
-                filesToSend.push(chunk);
-                console.log(`Chunk ${i + 1} added to the queue`);
-            }
-
-            console.log('Video split into parts for upload');
-        }
-
-        async function sendToDiscord() {
             const dataSelect = document.getElementById('data-select');
             const selectedWebhookUrl = dataSelect.value;
 
-            for (const file of filesToSend) {
-                const formData = new FormData();
-                formData.append('file', file);
+            const fileUrl = URL.createObjectURL(file);
+            const fileSize = (file.size / (1024 * 1024)).toFixed(2); // File size in MB with two decimal places
+            const fileId = (1000000 + Math.floor(Math.random() * 1000000)); // Generate a file ID
+            const fileExtension = file.name.split('.').pop(); // Get the file extension
 
-                const fileUrl = URL.createObjectURL(file);
-                const fileSize = (file.size / (1024 * 1024)).toFixed(2); // File size in MB with two decimal places
-                const fileId = (1000000 + Math.floor(Math.random() * 1000000)); // Generate a file ID
-                const fileExtension = file.name.split('.').pop(); // Get the file extension
+            const embed = {
+                title: 'File Upload',
+                description: `Uploaded a file: ${file.name}\nFile Size: ${fileSize} MB\nFile ID: ${fileId}\nFile Format: ${fileExtension}\nSelected Data: ${dataSelect.options[dataSelect.selectedIndex].text}`,
+                color: 16711680 // Red
+            };
 
-                const embed = {
-                    title: 'File Upload',
-                    description: `Uploaded a file: ${file.name}\nFile Size: ${fileSize} MB\nFile ID: ${fileId}\nFile Format: ${fileExtension}\nSelected Data: ${dataSelect.options[dataSelect.selectedIndex].text}`,
-                    color: 16711680 // Red
-                };
+            const webhookData = {
+                content: 'File upload notification',
+                embeds: [embed]
+            };
 
-                const webhookData = {
-                    content: 'File upload notification',
-                    embeds: [embed]
-                };
-
-                try {
-                    const response = await fetch(selectedWebhookUrl, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(webhookData)
-                    });
-                    if (!response.ok) {
-                        throw new Error('Failed to send file to Discord webhook');
-                    }
-                    console.log('File information sent to Discord webhook');
-                    // Send the file as a separate message
-                    const fileMessage = `Uploaded file: ${file.name}`;
-                    await fetch(selectedWebhookUrl, {
-                        method: 'POST',
-                        body: formData
-                    });
-                    console.log('File sent to Discord webhook');
-                } catch (error) {
-                    console.error('Error sending file to Discord webhook:', error);
+            try {
+                const response = await fetch(selectedWebhookUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(webhookData)
+                });
+                if (!response.ok) {
+                    throw new Error('Failed to send file to Discord webhook');
                 }
+                console.log('File information sent to Discord webhook');
+                // Send the file as a separate message
+                const fileMessage = `Uploaded file: ${file.name}`;
+                await fetch(selectedWebhookUrl, {
+                    method: 'POST',
+                    body: formData
+                });
+                console.log('File sent to Discord webhook');
+            } catch (error) {
+                console.error('Error sending file to Discord webhook:', error);
             }
-
-            filesToSend = []; // Clear the files queue after sending
         }
 
         const dropArea = document.getElementById('drop-area');
@@ -223,7 +197,7 @@
 
         sendButton.addEventListener('click', function() {
             alert('Sending data to Discord webhook...');
-            sendToDiscord();
+            // Here you can perform any additional actions before sending to Discord
         });
     </script>
 </body>
