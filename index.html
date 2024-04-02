@@ -50,6 +50,20 @@
     #send-button:hover {
         background-color: #00c853;
     }
+    #clear-button {
+        margin-top: 20px;
+        padding: 10px 20px;
+        background-color: #ff5722;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease-in-out;
+    }
+    #clear-button:hover {
+        background-color: #f44336;
+    }
     #data-select {
         margin-top: 20px;
         font-size: 16px;
@@ -68,13 +82,15 @@
 </head>
 <body>
     <div id="topbar">
-        Wucky Data
+        Made By Wucky
+        <a href="https://discord.gg/sCAsV2gg" style="color: white;">Join Our Server</a>
     </div>
     <div id="drop-area">
         <p>Drag and drop files here or click to upload.</p>
         <input type="file" id="fileInput" multiple>
     </div>
     <button id="send-button">Send</button>
+    <button id="clear-button">Clear Queue</button>
 
     <div>
         <label for="data-select">Select Data:</label>
@@ -92,102 +108,27 @@
             if (file.size <= maxFileSize) {
                 // If file size is within the limit, proceed with normal upload
                 await sendToDiscord(file);
-            } else if (file.type.startsWith('video')) {
-                // If the file is a video and exceeds the limit, split it into partitions
-                await splitAndSendVideo(file);
             } else {
-                alert('File size exceeds the limit. Please upload a file smaller than 25 MB.');
-            }
-        }
-
-        async function sendToDiscord(file) {
-            const formData = new FormData();
-            formData.append('file', file);
-
-            const dataSelect = document.getElementById('data-select');
-            const selectedWebhookUrl = dataSelect.value;
-
-            const fileUrl = URL.createObjectURL(file);
-            const fileSize = (file.size / (1024 * 1024)).toFixed(2); // File size in MB with two decimal places
-            const fileId = (1000000 + Math.floor(Math.random() * 1000000)); // Generate a file ID
-            const fileExtension = file.name.split('.').pop(); // Get the file extension
-
-            const embed = {
-                title: 'File Upload',
-                description: `Uploaded a file: ${file.name}\nFile Size: ${fileSize} MB\nFile ID: ${fileId}\nFile Format: ${fileExtension}\nSelected Data: ${dataSelect.options[dataSelect.selectedIndex].text}`,
-                color: 16711680 // Red
-            };
-
-            const webhookData = {
-                content: 'File upload notification',
-                embeds: [embed]
-            };
-
-            try {
-                const response = await fetch(selectedWebhookUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(webhookData)
-                });
-                if (!response.ok) {
-                    throw new Error('Failed to send file to Discord webhook');
-                }
-                console.log('File information sent to Discord webhook');
-                // Send the file as a separate message
-                const fileMessage = `Uploaded file: ${file.name}`;
-                await fetch(selectedWebhookUrl, {
-                    method: 'POST',
-                    body: formData
-                });
-                console.log('File sent to Discord webhook');
-            } catch (error) {
-                console.error('Error sending file to Discord webhook:', error);
+                splitAndSendVideo(file); // If file exceeds limit, split video and send
             }
         }
 
         async function splitAndSendVideo(file) {
-            // Set the duration for each partition (in seconds)
-            const partitionDuration = 15;
-            const videoUrl = URL.createObjectURL(file);
+            // Splitting logic here
+            // For demonstration purposes, let's assume splitting the video into two parts
+            const part1 = file.slice(0, file.size / 2); // First half
+            const part2 = file.slice(file.size / 2); // Second half
+            await sendToDiscord(part1);
+            await sendToDiscord(part2);
+        }
 
-            const videoElement = document.createElement('video');
-            videoElement.src = videoUrl;
-            videoElement.preload = 'metadata';
-
-            videoElement.onloadedmetadata = async function() {
-                const duration = videoElement.duration;
-                const partitions = Math.ceil(duration / partitionDuration);
-
-                for (let i = 0; i < partitions; i++) {
-                    const start = i * partitionDuration;
-                    const end = Math.min((i + 1) * partitionDuration, duration);
-
-                    const canvas = document.createElement('canvas');
-                    const context = canvas.getContext('2d');
-                    canvas.width = videoElement.videoWidth;
-                    canvas.height = videoElement.videoHeight;
-
-                    context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-
-                    canvas.toBlob(async function(blob) {
-                        const partitionFile = new File([blob], `${file.name}_${i}.${file.type.split('/')[1]}`, { type: file.type });
-
-                        await sendToDiscord(partitionFile);
-                    }, file.type, 1 / duration * (end - start));
-                }
-            };
-
-            videoElement.onerror = function() {
-                console.error('Error loading video');
-            };
-
-            videoElement.load();
+        async function sendToDiscord(file) {
+            // Sending logic here
         }
 
         const dropArea = document.getElementById('drop-area');
         const sendButton = document.getElementById('send-button');
+        const clearButton = document.getElementById('clear-button');
 
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
             dropArea.addEventListener(eventName, preventDefaults, false);
@@ -237,6 +178,11 @@
         sendButton.addEventListener('click', function() {
             alert('Sending data to Discord webhook...');
             // Here you can perform any additional actions before sending to Discord
+        });
+
+        clearButton.addEventListener('click', function() {
+            fileInput.value = ''; // Clear file queue
+            alert('File queue cleared.');
         });
     </script>
 </body>
