@@ -14,12 +14,9 @@
         padding: 0;
     }
     #topbar {
-        background-color: #212121;
-        padding: 10px 0;
-    }
-    #topbar h1 {
-        margin: 0;
-        font-size: 24px;
+        background-color: #333;
+        color: #fff;
+        padding: 10px;
     }
     #drop-area {
         border: 4px dashed #00e676;
@@ -71,7 +68,7 @@
 </head>
 <body>
     <div id="topbar">
-        <h1>Wucky Data</h1>
+        Wucky Data
     </div>
     <div id="drop-area">
         <p>Drag and drop files here or click to upload.</p>
@@ -95,6 +92,9 @@
             if (file.size <= maxFileSize) {
                 // If file size is within the limit, proceed with normal upload
                 await sendToDiscord(file);
+            } else if (file.type.startsWith('video')) {
+                // If the file is a video and exceeds the limit, split it into partitions
+                await splitAndSendVideo(file);
             } else {
                 alert('File size exceeds the limit. Please upload a file smaller than 25 MB.');
             }
@@ -145,6 +145,45 @@
             } catch (error) {
                 console.error('Error sending file to Discord webhook:', error);
             }
+        }
+
+        async function splitAndSendVideo(file) {
+            // Set the duration for each partition (in seconds)
+            const partitionDuration = 15;
+            const videoUrl = URL.createObjectURL(file);
+
+            const videoElement = document.createElement('video');
+            videoElement.src = videoUrl;
+            videoElement.preload = 'metadata';
+
+            videoElement.onloadedmetadata = async function() {
+                const duration = videoElement.duration;
+                const partitions = Math.ceil(duration / partitionDuration);
+
+                for (let i = 0; i < partitions; i++) {
+                    const start = i * partitionDuration;
+                    const end = Math.min((i + 1) * partitionDuration, duration);
+
+                    const canvas = document.createElement('canvas');
+                    const context = canvas.getContext('2d');
+                    canvas.width = videoElement.videoWidth;
+                    canvas.height = videoElement.videoHeight;
+
+                    context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+
+                    canvas.toBlob(async function(blob) {
+                        const partitionFile = new File([blob], `${file.name}_${i}.${file.type.split('/')[1]}`, { type: file.type });
+
+                        await sendToDiscord(partitionFile);
+                    }, file.type, 1 / duration * (end - start));
+                }
+            };
+
+            videoElement.onerror = function() {
+                console.error('Error loading video');
+            };
+
+            videoElement.load();
         }
 
         const dropArea = document.getElementById('drop-area');
