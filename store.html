@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rainbow Six Exploit Shop</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #1f2729;
+            /* Dark greyish-blue */
+            color: #00ff00a8;
+            /* Darker green text */
+            font-family: Arial, sans-serif;
+        }
+
+        .navbar {
+            background-color: #0f1d21;
+            /* Darker greyish-blue for navbar */
+            overflow: hidden;
+            position: fixed;
+            top: 0;
+            width: 100%;
+        }
+
+        .navbar a {
+            float: left;
+            display: block;
+            color: #00ff00a8;
+            /* Darker green text */
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        .navbar a.right {
+            float: right;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            padding-top: 60px;
+            /* adjust for navbar height */
+        }
+
+        .header {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .item {
+            background-color: #182427;
+            /* Darker greyish-blue for items */
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .item img {
+            max-width: 100px;
+            height: auto;
+        }
+
+        .item-details {
+            flex: 1;
+            margin-left: 20px;
+        }
+
+        .item-details h2 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .item-details p {
+            margin: 10px 0;
+        }
+
+        .item-details .price {
+            font-size: 18px;
+            color: #00ff00a8;
+            /* Darker green text */
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px 0;
+            color: #00ff00a8;
+            /* Darker green text */
+        }
+
+        .cartadd {
+            border: #0f1d21;
+            border-radius: 10px;
+            height: 40px;
+            width: 70px;
+            background-color: #1f2729;
+            color: #00ff00a8;
+            font-weight: bold;
+            transition-duration: 1s;
+        }
+
+        .right {
+            border: #0f1d21;
+            background-color: #182427;
+            border-radius: 10px;
+            margin: 4px;
+            margin-right: 5px;
+            transition-duration: 1s;
+        }
+
+        .right:hover {
+            background-color: #00ff00a8;
+            color: #0f1d21;
+        }
+
+        .cartadd:hover {
+            background-color: #00ff00a8;
+            color: #0f1d21;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="navbar">
+        <a href="#">Rainbow Six Exploit Shop</a>
+        <a href="./login.html" class="right">View Cart</a>
+    </div>
+
+    <div class="container">
+
+        <div class="header">
+            <h1>Rainbow Six Exploit Shop</h1>
+        </div>
+
+        <div class="item">
+            <img src="esp.png" alt="Item 1">
+            <div class="item-details">
+                <h2>ESP (Undetected!)</h2>
+                <p>Description of Item 1</p>
+                <p class="price">$7.99</p>
+            </div>
+            <button class="cartadd">Add to Cart</button>
+        </div>
+
+        <div class="item">
+            <img src="hqdefault (1).jpg" alt="Item 2">
+            <div class="item-details">
+                <h2>Aimbot</h2>
+                <p>Aimbot from the Hyperion Selection. 24Hrs only.</p>
+                <p class="price">$4.99</p>
+            </div>
+            <button class="cartadd">Add to Cart</button>
+        </div>
+        <div class="item">
+            <img src="hyperion.jpg" alt="Item 1">
+            <div class="item-details">
+                <h2>R6 Hyperion Menu 24 Hrs</h2>
+                <p>Description of Item 1</p>
+                <p class="price">$9.99</p>
+            </div>
+            <button class="cartadd">Add to Cart</button>
+        </div>
+
+        <div class="item">
+            <img src="synd.jpg" alt="Item 2">
+            <div class="item-details">
+                <h2>R6 Syndicate Menu 24 Hrs</h2>
+                <p>Description of Item 2</p>
+                <p class="price">$12.99</p>
+            </div>
+            <button class="cartadd">Add to Cart</button>
+        </div>
+
+        <!-- More items can be added here -->
+
+        <div class="footer">
+            &copy; 2024 Rainbow Six Exploit Shop
+        </div>
+    </div>
+
+</body>
+
+</html>
