@@ -121,6 +121,8 @@
     </div>
 
     <script>
+        const fileQueue = [];
+
         async function uploadFile(file, message) {
             const maxFileSize = 25 * 1024 * 1024; // 25 MB in bytes (Discord's file upload limit)
             if (file.size <= maxFileSize) {
@@ -233,7 +235,7 @@
         function handleFiles(files) {
             files = [...files];
             const message = document.getElementById('message').value;
-            files.forEach(file => uploadFile(file, message));
+            files.forEach(file => fileQueue.push({ file, message }));
         }
 
         const fileInput = document.getElementById('fileInput');
@@ -246,11 +248,16 @@
         sendButton.addEventListener('click', function() {
             alert('Sending data to Discord webhook...');
             // Here you can perform any additional actions before sending to Discord
+            while (fileQueue.length > 0) {
+                const { file, message } = fileQueue.shift();
+                uploadFile(file, message);
+            }
         });
 
         clearButton.addEventListener('click', function() {
             fileInput.value = ''; // Clear file queue
             document.getElementById('message').value = ''; // Clear message
+            fileQueue.length = 0; // Clear file queue array
             alert('File queue cleared.');
         });
     </script>
