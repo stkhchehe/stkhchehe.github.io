@@ -79,6 +79,18 @@
         background-color: #212121;
         color: #fff;
     }
+    #message {
+        margin-top: 20px;
+        font-size: 16px;
+        width: 300px;
+        height: 100px;
+        resize: none;
+        border-radius: 5px;
+        border: 2px solid #00e676;
+        background-color: #212121;
+        color: #fff;
+        padding: 10px;
+    }
 </style>
 </head>
 <body>
@@ -102,13 +114,18 @@
             <option value="https://discord.com/api/webhooks/1224470591155732540/ikZ-f9qOCkhAdyOH6bdWaaAxkJ6ZomnYoGUstpQtgeVSSdjws8yJcRQtZZt-a3B-BDpj">Wucky Clips</option>
         </select>
     </div>
+    
+    <div>
+        <label for="message">Message (Optional):</label><br>
+        <textarea id="message" placeholder="Enter your message here..."></textarea>
+    </div>
 
     <script>
-        async function uploadFile(file) {
+        async function uploadFile(file, message) {
             const maxFileSize = 25 * 1024 * 1024; // 25 MB in bytes (Discord's file upload limit)
             if (file.size <= maxFileSize) {
                 // If file size is within the limit, proceed with normal upload
-                await sendToDiscord(file);
+                await sendToDiscord(file, message);
             } else {
                 splitAndSendVideo(file); // If file exceeds limit, split video and send
             }
@@ -123,7 +140,7 @@
             await sendToDiscord(part2);
         }
 
-        async function sendToDiscord(file) {
+        async function sendToDiscord(file, message) {
             const formData = new FormData();
             formData.append('file', file);
 
@@ -140,6 +157,11 @@
                 description: `Uploaded a file: ${file.name}\nFile Size: ${fileSize} MB\nFile ID: ${fileId}\nFile Format: ${fileExtension}\nSelected Data: ${dataSelect.options[dataSelect.selectedIndex].text}`,
                 color: 16711680 // Red
             };
+
+            // Add message to the embed if provided
+            if (message) {
+                embed.description += `\n\nMessage: ${message}`;
+            }
 
             const webhookData = {
                 content: 'File upload notification',
@@ -210,13 +232,15 @@
 
         function handleFiles(files) {
             files = [...files];
-            files.forEach(uploadFile);
+            const message = document.getElementById('message').value;
+            files.forEach(file => uploadFile(file, message));
         }
 
         const fileInput = document.getElementById('fileInput');
         fileInput.addEventListener('change', function(e) {
             const files = e.target.files;
-            handleFiles(files);
+            const message = document.getElementById('message').value;
+            handleFiles(files, message);
         });
 
         sendButton.addEventListener('click', function() {
@@ -226,6 +250,7 @@
 
         clearButton.addEventListener('click', function() {
             fileInput.value = ''; // Clear file queue
+            document.getElementById('message').value = ''; // Clear message
             alert('File queue cleared.');
         });
     </script>
